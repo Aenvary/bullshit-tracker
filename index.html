@@ -8,57 +8,105 @@
 </head>
 <body>
 <main class="app">
-    <header class="app-header">
-        <h1 class="app-title">Bullshit Tracker</h1>
+<div class="app-shell">
+
+  <!-- HOME VIEW -->
+  <section class="view view-home" data-view="home">
+    <header class="view-header">
+      <h1 class="app-title">Bullshit Tracker</h1>
     </header>
 
-    <section class="section">
-        <h2 class="section-title">Summary</h2>
-        <div id="streak" class="streak"></div>
-        <div id="totals" class="totals"></div>
-    </section>
+    <div class="card">
+      <h2 class="card-title">Streak</h2>
+      <div id="streak"></div>
+    </div>
 
-    <section class="section">
-        <h2 class="section-title">Expenses</h2>
-        <ul id="expense-list" class="expense-list"></ul>
-    </section>
+    <div class="card">
+      <h2 class="card-title">Summary</h2>
+      <div id="totals" class="totals"></div>
+    </div>
 
-    <section class="section">
-        <h2 class="section-title">Add New</h2>
-        <form id="expense-form" class="expense-form">
-            <div class="field">
-                <label for="description">Description:</label>
-                <input type="text" id="description" name="description">
-            </div>
-            <div class="field">
-                <label for="type">Type:</label>
-                <input type="text" id="type" name="type">
-            </div>
-            <div class="field">
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" name="amount">
-            </div>
-            <div class="field">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date">
-            </div>
-            <div class="field">
-                <span class="field-label">Category:</span>
-                <div class="radio-group">
-                    <input type="radio" id="needed" name="category" value="needed">
-                    <label for="needed">Needed</label>
-                    <input type="radio" id="worth-it" name="category" value="worth-it">
-                    <label for="worth-it">Worth It</label>
-                    <input type="radio" id="bullshit" name="category" value="bullshit">
-                    <label for="bullshit">Bullshit</label>
-                </div>
-            </div>
-            <button type="submit" class="submit-btn">Add Expense</button>
-        </form>
-    </section>
-    <section class="section">
-        <button class="export-btn" id="export-btn">Download JSON</button>
-    </section>
+    <div class="card">
+      <h2 class="card-title">Recent</h2>
+      <ul id="recent-list" class="expense-list"></ul>
+    </div>
+  </section>
+
+  <!-- EXPENSES VIEW -->
+  <section class="view view-expenses" data-view="expenses" hidden>
+    <header class="view-header">
+      <h1 class="app-title">Expenses</h1>
+    </header>
+
+    <div class="card">
+      <ul id="expense-list" class="expense-list"></ul>
+    </div>
+  </section>
+
+  <!-- FLOATING ACTION BUTTON -->
+  <button class="fab" id="fab" aria-label="Add expense">+</button>
+
+  <!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <svg class="bottom-nav-bg" viewBox="0 -32 400 112" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M 0 30
+         L 156 30
+         A 44 56 0 0 1 244 30
+         L 400 30
+         L 400 80
+         L 0 80
+         Z" />
+  </svg>
+  <div class="bottom-nav-buttons">
+    <button class="nav-btn" data-nav="home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" data-nav="expenses">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Expenses</span>
+    </button>
+  </div>
+</nav>
+
+  <!-- BOTTOM SHEET (form) -->
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title">Log Expense</h2>
+    <form id="expense-form" class="expense-form">
+      <div class="field">
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description">
+      </div>
+      <div class="field">
+        <label for="type">Type</label>
+        <input type="text" id="type" name="type">
+      </div>
+      <div class="field">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount">
+      </div>
+      <div class="field">
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date">
+      </div>
+      <div class="field">
+        <span class="field-label">Category</span>
+        <div class="radio-group">
+          <input type="radio" id="needed" name="category" value="needed">
+          <label for="needed">Needed</label>
+          <input type="radio" id="worth-it" name="category" value="worth-it">
+          <label for="worth-it">Worth It</label>
+          <input type="radio" id="bullshit" name="category" value="bullshit">
+          <label for="bullshit">Bullshit</label>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn">Add Expense</button>
+    </form>
+  </div>
+
+</div>
 </main>
 <script src="script.js"></script>
 </body>

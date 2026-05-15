@@ -4,46 +4,46 @@ const expenseList = document.getElementById("expense-list");
 const CATEGORIES = ["needed", "worth-it", "bullshit"];
 const totalsEl = document.getElementById("totals");
 const streakEl = document.getElementById("streak");
-const exportBtn = document.getElementById("export-btn");
+// const exportBtn = document.getElementById("export-btn");
 let armedDeleteId = null;
 
-function getTodayLocal(){
+function getTodayLocal() {
     const d = new Date();
     const year = d.getFullYear();
-    const month = String(d.getMonth() +1).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`
 }
 
 function previousDay(isoString) {
     const d = new Date(isoString);
-    d.setDate(d.getDate()-1);
+    d.setDate(d.getDate() - 1);
     const year = d.getFullYear();
-    const month = String(d.getMonth() +1).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`
 }
 
-function hasBullshitOn(dateString){
+function hasBullshitOn(dateString) {
     return expenses.some(e => e.date === dateString && e.currentCategory === "bullshit");
 }
 
-function computeStreak(){
+function computeStreak() {
     const today = getTodayLocal();
     let pointer = previousDay(today);
     const todayClean = !hasBullshitOn(today);
     let days = 0;
-    while(!hasBullshitOn(pointer) && days < 365){
+    while (!hasBullshitOn(pointer) && days < 365) {
         days++;
         pointer = previousDay(pointer);
     }
-    return {days, todayClean};
+    return { days, todayClean };
 }
 
 function renderStreak() {
     const { days, todayClean } = computeStreak();
     let streakText = "";
-    
+
     if (days === 0 && !todayClean) {
         streakText = "Bullshit spending spree — 0 days, today ruined";
     } else if (days === 0 && todayClean) {
@@ -82,7 +82,7 @@ function renderExpenses() {
 function totalForCategory(category) {
     return expenses
         .filter(e => e.currentCategory === category)
-        .reduce((acc,e) => acc + e.amount, 0);
+        .reduce((acc, e) => acc + e.amount, 0);
 }
 
 function renderTotals() {
@@ -90,7 +90,7 @@ function renderTotals() {
     const worthItTotal = totalForCategory("worth-it");
     const bullshitTotal = totalForCategory("bullshit");
     const actualTotal = expenses.reduce((acc, e) => acc + e.amount, 0);
-    
+
     totalsEl.innerHTML = `
         <div class="total-row total-needed">
             <span class="total-label">Needed</span>
@@ -112,7 +112,7 @@ function renderTotals() {
 }
 
 const form = document.getElementById("expense-form");
-form.addEventListener("submit", function(event){
+form.addEventListener("submit", function (event) {
     event.preventDefault();
     console.log("form submitted!");
     const formData = new FormData(form);
@@ -130,22 +130,23 @@ form.addEventListener("submit", function(event){
         currentCategory: category,
     });
     form.reset();
+    closeSheet();
 });
 
 function addExpense(expenseData) {
-  const newExpense = {
-    id: Date.now(),
-    ...expenseData,
-  };
-  expenses.push(newExpense);
-  armedDeleteId = null;
-  saveAndRender();
+    const newExpense = {
+        id: Date.now(),
+        ...expenseData,
+    };
+    expenses.push(newExpense);
+    armedDeleteId = null;
+    saveAndRender();
 }
 
-expenseList.addEventListener("click", function(event){
+expenseList.addEventListener("click", function (event) {
     const reviewBtn = event.target.closest(".review-btn");
     const deleteBtn = event.target.closest(".delete-btn");
-    if (event.target.matches(".review-btn")){
+    if (event.target.matches(".review-btn")) {
         armedDeleteId = null;
         const id = Number(reviewBtn.dataset.id);
         const expense = expenses.find(e => e.id === id);
@@ -154,11 +155,11 @@ expenseList.addEventListener("click", function(event){
         expense.currentCategory = CATEGORIES[nextIndex];
         saveAndRender();
     }
-    else if(event.target.closest(".delete-btn")){
+    else if (event.target.closest(".delete-btn")) {
         const id = Number(deleteBtn.dataset.id);
-        if (armedDeleteId === id){
+        if (armedDeleteId === id) {
             const index = expenses.findIndex(e => e.id === id);
-            expenses.splice(index,1);
+            expenses.splice(index, 1);
             armedDeleteId = null;
             saveAndRender();
         } else {
@@ -175,14 +176,68 @@ function renderAll() {
     renderStreak();
 }
 
-function saveAndRender(){
-    localStorage.setItem("expenses",JSON.stringify(expenses));
+const fab = document.getElementById("fab");
+const sheet = document.getElementById("sheet");
+const sheetBackdrop = document.getElementById("sheet-backdrop");
+
+function openSheet() {
+    sheet.hidden = false;
+    sheetBackdrop.hidden = false;
+    fab.classList.add("fab-open");
+}
+
+function closeSheet() {
+    sheet.hidden = true;
+    sheetBackdrop.hidden = true;
+    fab.classList.remove("fab-open");
+}
+
+fab.addEventListener("click", function () {
+    if (sheet.hidden) {
+        openSheet();
+    } else {
+        closeSheet();
+    }
+});
+
+sheetBackdrop.addEventListener("click", closeSheet);
+
+const navBtn = document.querySelectorAll(".nav-btn");
+const allView = document.querySelectorAll(".view");
+const nav = document.querySelector(".bottom-nav");
+
+function switchView(viewName) {
+    allView.forEach(view => {
+        if (view.dataset.view === viewName) {
+            view.hidden = false;
+        } else {
+            view.hidden = true;
+        }
+    });
+    navBtn.forEach(btn => {
+        if (btn.dataset.nav === viewName) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+}
+
+nav.addEventListener("click", function (event) {
+    const clickedBtn = event.target.closest(".nav-btn");
+    if (clickedBtn) {
+        switchView(clickedBtn.dataset.nav);
+    }
+});
+
+function saveAndRender() {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
     renderAll();
 }
 
-function exportExpenses(){
+function exportExpenses() {
     const data = JSON.stringify(expenses, null, 2);
-    const blob = new Blob([data], {type: "application/json"});
+    const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -190,5 +245,5 @@ function exportExpenses(){
     a.click();
     URL.revokeObjectURL(url);
 }
-exportBtn.addEventListener("click", exportExpenses);
+// exportBtn.addEventListener("click", exportExpenses);
 renderAll();

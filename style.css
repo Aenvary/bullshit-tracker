@@ -58,6 +58,7 @@ body {
   line-height: 1.5;
   min-height: 100vh;
   padding: var(--space-md);
+  padding-bottom: 132px;
 }
 
 .app {
@@ -355,4 +356,212 @@ body {
 
 .export-btn:active {
   transform: scale(0.98);
+}
+
+/* ============================================
+   STAGE 2: NEW APP SHELL + VIEWS + FAB + NAV
+   ============================================ */
+
+/* The body needs more bottom padding to clear the fixed nav bar */
+body {
+  padding: 0;
+  padding-bottom: 120px; /* was 100px */
+}
+
+.app-shell {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding: var(--space-md);
+}
+
+/* === VIEWS === */
+/* Each .view is a "page". Only one visible at a time. */
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.view[hidden] {
+  display: none;
+}
+
+.view-header {
+  text-align: center;
+  padding: var(--space-md) 0;
+}
+
+/* === CARDS === */
+/* Replaces .section. Container for any block of content. */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.card-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-dim);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* === FLOATING ACTION BUTTON === */
+.fab {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-needed);
+  color: var(--color-bg);
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.fab:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.fab:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+/* When sheet is open, rotate the + into an X */
+.fab.fab-open {
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* === BOTTOM NAV === */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 112px; /* was 80px */
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* SVG that draws the notched shape behind the buttons */
+.bottom-nav-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+  stroke-width: 1;
+  preserveAspectRatio: none;
+}
+
+.bottom-nav-buttons {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 64px; /* matches the bottom 64px of the SVG, leaving the dip area free */
+  padding-top: 8px;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-dim);
+  transition: color 0.15s ease;
+}
+
+.nav-btn:hover {
+  color: var(--color-text);
+}
+
+.nav-btn.active {
+  color: var(--color-accent);
+}
+
+.nav-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* === BOTTOM SHEET === */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sheet-backdrop:not([hidden]) {
+  opacity: 1;
+}
+
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-radius: 16px 16px 0 0;
+  padding: var(--space-md);
+  padding-bottom: var(--space-xl);
+  z-index: 300;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+}
+
+.sheet:not([hidden]) {
+  transform: translateY(0);
+}
+
+.sheet[hidden] {
+  display: block !important; /* override hidden so we can animate */
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--color-text-dim);
+  border-radius: 2px;
+  margin: 0 auto var(--space-md);
+}
+
+.sheet-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-dim);
+  text-align: center;
+  margin-bottom: var(--space-md);
 }
