@@ -4,6 +4,7 @@ const expenseList = document.getElementById("expense-list");
 const CATEGORIES = ["needed", "worth-it", "bullshit"];
 const totalsEl = document.getElementById("totals");
 const streakEl = document.getElementById("streak");
+const recentList = document.getElementById("recent-list");
 // const exportBtn = document.getElementById("export-btn");
 let armedDeleteId = null;
 
@@ -59,7 +60,8 @@ function renderStreak() {
 
 function renderExpenses() {
     let html = "";
-    for (const expense of expenses) {
+    const sorted = [...expenses].sort((a,b) => b.date.localeCompare(a.date));
+    for (const expense of sorted) {
         const isRegretted = expense.currentCategory === "bullshit" && expense.originalCategory !== "bullshit";
         const isArmed = expense.id === armedDeleteId;
 
@@ -111,10 +113,26 @@ function renderTotals() {
     `;
 }
 
+function renderRecent(){
+    const recent = [...expenses].sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
+    let html = "";
+    for (const expense of recent) {
+        const isRegretted = expense.currentCategory === "bullshit" && expense.originalCategory !== "bullshit";
+        html += `
+            <li class="expense">
+                <span class="expense-description">${expense.description}</span>
+                <span class="expense-amount">$${expense.amount}</span>
+                <span class="expense-category category-${expense.currentCategory}">${expense.currentCategory}</span>
+                ${isRegretted ? `<span class="regretted">(regretted)</span>` : ""}
+            </li>
+        `;
+    }
+    recentList.innerHTML = html;
+}
+
 const form = document.getElementById("expense-form");
 form.addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log("form submitted!");
     const formData = new FormData(form);
     const description = formData.get("description");
     const amount = Number(formData.get("amount"));
@@ -174,6 +192,7 @@ function renderAll() {
     renderExpenses();
     renderTotals();
     renderStreak();
+    renderRecent();
 }
 
 const fab = document.getElementById("fab");

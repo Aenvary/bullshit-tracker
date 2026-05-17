@@ -20,7 +20,7 @@ Vanilla HTML, CSS, JavaScript. No build step, no framework, no dependencies.
 
 ## Run
 
-Open `index.html` in a browser. That's it.
+Open `index.html` in a browser. Thgiat's it.
 
 ## Status
 
